@@ -8,7 +8,7 @@ from .forms import LoginForm
 def get_role_redirect_url(user) -> str:
     """Return the landing URL for the user's role (spec US5, scenario 3)."""
     if user.role == user.Role.ADMIN:
-        return '/admin/dashboard/'
+        return '/manager/dashboard/'
     if user.role == user.Role.EDITOR:
         return '/editor/queue/'
     return '/author/dashboard/'

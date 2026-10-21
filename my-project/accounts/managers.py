@@ -28,4 +28,4 @@ class UserManager(DjangoUserManager):
         """Create the initial admin if none exists (idempotent)."""
         if self.filter(role=self.model.Role.ADMIN, is_active=True).exists():
             return None
-        return self.create_user(username, password, role=self.model.Role.ADMIN)
+        return self.create_superuser(username, password)

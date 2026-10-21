@@ -271,28 +271,28 @@ description: "Task list for Core Blog & Editorial Workflow implementation"
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T095 [P] [US5] Contract test: login page accessible, POST authenticates at `accounts/tests/test_views.py::test_login`
-- [ ] T096 [P] [US5] Integration test: bootstrap Admin created on first run, not duplicated at `accounts/tests/test_bootstrap.py::test_bootstrap_admin` — **SC-008**
-- [ ] T097 [P] [US5] Integration test: role-based redirect (Admin→/admin/dashboard, Editor→/editor/queue, Author→/author/dashboard) at `accounts/tests/test_views.py::test_role_redirect` — **SC-006**
-- [ ] T098 [P] [US5] Integration test: inactive user login denied at `accounts/tests/test_views.py::test_inactive_user_blocked` — **FR-004**
-- [ ] T099 [P] [US5] Integration test: Admin creates user with AUTHOR role → user can login and access Author features at `accounts/tests/test_bootstrap.py::test_admin_create_user` — **FR-004**
+- [X] T095 [P] [US5] Contract test: login page accessible, POST authenticates at `accounts/tests/test_views.py::test_login_page_accessible` / `test_login_post_authenticates`
+- [X] T096 [P] [US5] Integration test: bootstrap Admin created on first run, not duplicated at `accounts/tests/test_bootstrap.py` — **SC-008**
+- [X] T097 [P] [US5] Integration test: role-based redirect (Admin→/manager/dashboard, Editor→/editor/queue, Author→/author/dashboard) at `accounts/tests/test_views.py` — **SC-006**
+- [X] T098 [P] [US5] Integration test: inactive user login denied at `accounts/tests/test_views.py::test_inactive_user_login_denied` — **FR-004**
+- [X] T099 [P] [US5] Integration test: Admin creates user with AUTHOR role → user can login and access Author features at `accounts/tests/test_views.py::test_admin_create_user_and_access` — **FR-004**
 
 ### Implementation for User Story 5
 
 **Views** (extend from Phase 2)
 
-- [ ] T100 [US5] Enhance login view: role-based redirect using authentication_success_handler pattern at `accounts/views.py` — **FR-001**
-- [ ] T101 [US5] Create logout view with secure session invalidation at `accounts/views.py`
-- [ ] T102 [US5] Create Admin user management views: list, create, edit (role, active), deactivate at `workflow/views.py` — **FR-004, FR-005**
-- [ ] T103 [US5] Implement last Admin protection in deactivate/role-change logic at `accounts/managers.py` or `workflow/views.py` — **FR-005, FR-006**
+- [X] T100 [US5] Enhance login view: role-based redirect using authentication_success_handler pattern at `accounts/views.py` — **FR-001**
+- [X] T101 [US5] Create logout view with secure session invalidation at `accounts/views.py`
+- [X] T102 [US5] Create Admin user management views: list, create, edit (role, active), deactivate at `workflow/views.py` (Phase 6) — **FR-004, FR-005**
+- [X] T103 [US5] Implement last Admin protection in deactivate/role-change logic at `accounts/managers.py` / `workflow/forms.py` — **FR-005, FR-006**
 
 **Templates** (extend from Phase 2)
 
-- [ ] T104 [P] [US5] Enhance login template: error messages, RTL Persian at `accounts/templates/accounts/login.html` — **FR-027**
+- [X] T104 [P] [US5] Enhance login template: error messages, RTL Persian at `accounts/templates/accounts/login.html` — **FR-027**
 
 **URLs**
 
-- [ ] T105 [US5] Configure auth URLs: `/login`, `/logout` at `accounts/urls.py` and include in project urls
+- [X] T105 [US5] Configure auth URLs: `/login`, `/logout` at `accounts/urls.py` and include in project urls
 
 **Checkpoint**: Full auth flow works, bootstrap Admin, role redirects, user management, last Admin protection
 

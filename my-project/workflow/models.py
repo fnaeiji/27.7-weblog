@@ -20,7 +20,9 @@ class WorkflowEvent(models.Model):
         ASSIGN_ROLE = 'ASSIGN_ROLE', 'انتساب نقش'
         DEACTIVATE_USER = 'DEACTIVATE_USER', 'غیرفعال‌سازی کاربر'
 
-    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='workflow_events')
+    article = models.ForeignKey(
+        Article, on_delete=models.CASCADE, related_name='workflow_events', null=True, blank=True
+    )
     revision = models.ForeignKey(
         ArticleRevision,
         on_delete=models.SET_NULL,
