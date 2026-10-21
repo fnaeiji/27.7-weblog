@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "صفحه‌بندی ویراستاری" %}{% endblock %}
+
+{% block content %}
+  <h1 class="page-title">{% trans "مقالات در انتظار بررسی" %}</h1>
+
+  {% if articles %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>{% trans "عنوان" %}</th>
+          <th>{% trans "نویسنده" %}</th>
+          <th>{% trans "آخرین به‌روزرسانی" %}</th>
+          <th>{% trans "عملیات" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for article in articles %}
+          {% with rev=article.get_current_revision %}
+          <tr>
+            <td>{{ rev.title }}</td>
+            <td>{{ article.author.username }}</td>
+            <td>{{ article.updated_at|date:"Y-m-d H:i" }}</td>
+            <td>
+              <a class="button button--primary" href="{% url 'editor_review' pk=article.pk %}">{% trans "بررسی" %}</a>
+            </td>
+          </tr>
+          {% endwith %}
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if page_obj.has_other_pages %}
+      <nav class="pagination" aria-label="{% trans 'صفحه‌بندی' %}">
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}">{% trans "قبلی" %}</a>
+        {% endif %}
+        <span>{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}">{% trans "بعدی" %}</a>
+        {% endif %}
+      </nav>
+    {% endif %}
+  {% else %}
+    <p class="empty-state">{% trans "مقاله‌ای در انتظار بررسی وجود ندارد." %}</p>
+  {% endif %}
+{% endblock %}

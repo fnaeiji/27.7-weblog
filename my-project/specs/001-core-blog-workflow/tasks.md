@@ -180,36 +180,36 @@ description: "Task list for Core Blog & Editorial Workflow implementation"
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T062 [P] [US3] Contract test: Editor queue accessible only to Editor/Admin at `workflow/tests/test_editor_views.py::test_queue_auth`
-- [ ] T063 [P] [US3] Integration test: Editor queue shows only IN_EDITORIAL_REVIEW articles ordered by update time at `workflow/tests/test_editor_views.py::test_queue_listing` — **FR-011**
-- [ ] T064 [P] [US3] Integration test: request changes with note → CHANGES_REQUESTED, workflow event logged at `workflow/tests/test_editor_views.py::test_request_changes` — **FR-012, FR-021**
-- [ ] T065 [P] [US3] Integration test: approve editorial → PENDING_ADMIN_APPROVAL, workflow event logged at `workflow/tests/test_editor_views.py::test_approve_editorial` — **FR-013**
-- [ ] T066 [P] [US3] Integration test: edit during review → new revision, status DRAFT, workflow event logged at `workflow/tests/test_editor_views.py::test_edit_during_review` — **FR-014**
-- [ ] T067 [P] [US3] Security test: Editor cannot publish directly (no UI, server rejects) at `workflow/tests/test_editor_views.py::test_editor_cannot_publish` — **FR-016, SC-006**
+- [X] T062 [P] [US3] Contract test: Editor queue accessible only to Editor/Admin at `workflow/tests/test_editor_views.py::test_queue_auth`
+- [X] T063 [P] [US3] Integration test: Editor queue shows only IN_EDITORIAL_REVIEW articles ordered by update time at `workflow/tests/test_editor_views.py::test_queue_listing` — **FR-011**
+- [X] T064 [P] [US3] Integration test: request changes with note → CHANGES_REQUESTED, workflow event logged at `workflow/tests/test_editor_views.py::test_request_changes` — **FR-012, FR-021**
+- [X] T065 [P] [US3] Integration test: approve editorial → PENDING_ADMIN_APPROVAL, workflow event logged at `workflow/tests/test_editor_views.py::test_approve_editorial` — **FR-013**
+- [X] T066 [P] [US3] Integration test: edit during review → new revision, status DRAFT, workflow event logged at `workflow/tests/test_editor_views.py::test_edit_during_review` — **FR-014**
+- [X] T067 [P] [US3] Security test: Editor cannot publish directly (no UI, server rejects) at `workflow/tests/test_editor_views.py::test_editor_cannot_publish` — **FR-016, SC-006**
 
 ### Implementation for User Story 3
 
 **Forms**
 
-- [ ] T068 [P] [US3] Create ReviewForm: action (request_changes/approve), note (required for request_changes) at `workflow/forms.py` — **FR-012**
+- [X] T068 [P] [US3] Create ReviewForm: action (request_changes/approve), note (required for request_changes) at `workflow/forms.py` — **FR-012**
 
 **Views**
 
-- [ ] T069 [US3] Create Editor queue view: list IN_EDITORIAL_REVIEW articles with title, author, updated_at at `workflow/views.py` — **FR-011**
-- [ ] T070 [US3] Create article review view: GET shows article with sanitized HTML, POST handles request_changes/approve/edit at `workflow/views.py` — **FR-012, FR-013, FR-014**
-- [ ] T071 [US3] Implement request_changes: validate note, transition to CHANGES_REQUESTED, log WorkflowEvent with note at `workflow/views.py` — **FR-012, FR-021**
-- [ ] T072 [US3] Implement approve_editorial: transition to PENDING_ADMIN_APPROVAL, log WorkflowEvent bound to current revision at `workflow/views.py` — **FR-013, FR-022**
-- [ ] T073 [US3] Implement edit_during_review: create new revision, revert to DRAFT, log WorkflowEvent at `workflow/views.py` — **FR-014, FR-020**
+- [X] T069 [US3] Create Editor queue view: list IN_EDITORIAL_REVIEW articles with title, author, updated_at at `workflow/views.py` — **FR-011**
+- [X] T070 [US3] Create article review view: GET shows article with sanitized HTML, POST handles request_changes/approve/edit at `workflow/views.py` — **FR-012, FR-013, FR-014**
+- [X] T071 [US3] Implement request_changes: validate note, transition to CHANGES_REQUESTED, log WorkflowEvent with note at `workflow/views.py` — **FR-012, FR-021**
+- [X] T072 [US3] Implement approve_editorial: transition to PENDING_ADMIN_APPROVAL, log WorkflowEvent bound to current revision at `workflow/views.py` — **FR-013, FR-022**
+- [X] T073 [US3] Implement edit_during_review: create new revision, revert to DRAFT, log WorkflowEvent at `workflow/views.py` — **FR-014, FR-020**
 
 **Templates**
 
-- [ ] T074 [P] [US3] Create editor queue template: table with article title, author, updated, actions at `workflow/templates/workflow/editor/queue.html` — **FR-026**
-- [ ] T075 [P] [US3] Create editor review template: article content, review form with note field at `workflow/templates/workflow/editor/review.html` — **FR-026**
+- [X] T074 [P] [US3] Create editor queue template: table with article title, author, updated, actions at `workflow/templates/workflow/editor/queue.html` — **FR-026**
+- [X] T075 [P] [US3] Create editor review template: article content, review form with note field at `workflow/templates/workflow/editor/review.html` — **FR-026**
 
 **URLs & Permissions**
 
-- [ ] T076 [US3] Configure Editor URLs: `/editor/queue/`, `/editor/article/<id>/review/` at `workflow/urls.py`
-- [ ] T077 [US3] Apply Editor/Admin permission checks to all Editor views at `workflow/views.py` — **FR-003, FR-004**
+- [X] T076 [US3] Configure Editor URLs: `/editor/queue/`, `/editor/article/<id>/review/` at `workflow/urls.py`
+- [X] T077 [US3] Apply Editor/Admin permission checks to all Editor views at `workflow/views.py` — **FR-003, FR-004**
 
 **Checkpoint**: Login as Editor, review queue works, request_changes/approve/edit all function correctly
 

@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "بررسی مقاله" %}: {{ revision.title }}{% endblock %}
+
+{% block content %}
+  <div class="review-header">
+    <h1 class="page-title">{{ revision.title }}</h1>
+    <span class="badge badge--in-review">{% trans "در بررسی ویراستار" %}</span>
+  </div>
+
+  <div class="review-content">
+    <div class="review__article">
+      {% if revision.excerpt %}<p class="article__excerpt">{{ revision.excerpt }}</p>{% endif %}
+      <div class="article__body">{{ content_html|safe }}</div>
+      {% if revision.get_tags_list %}
+        <p class="article__tags">{% trans "برچسب‌ها" %}: {{ revision.get_tags_list|join:"، " }}</p>
+      {% endif %}
+    </div>
+
+    <div class="review__actions card">
+      <h2>{% trans "عملیات ویراستاری" %}</h2>
+      <form method="post" class="form" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <ul class="form__errors">
+            {% for error in form.non_field_errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        {{ form.action }}
+
+        <div id="request-changes-fields" class="action-fields">
+          <div class="form__field">
+            {{ form.note.label_tag }}
+            {{ form.note }}
+            {% for error in form.note.errors %}
+              <span class="form__error">{{ error }}</span>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div id="edit-fields" class="action-fields" style="display:none;">
+          <div class="form__field">
+            {{ form.title.label_tag }}
+            {{ form.title }}
+            {% for error in form.title.errors %}
+              <span class="form__error">{{ error }}</span>
+            {% endfor %}
+          </div>
+          <div class="form__field">
+            {{ form.slug.label_tag }}
+            {{ form.slug }}
+            {% for error in form.slug.errors %}
+              <span class="form__error">{{ error }}</span>
+            {% endfor %}
+          </div>
+          <div class="form__field">
+            {{ form.excerpt.label_tag }}
+            {{ form.excerpt }}
+            {% for error in form.excerpt.errors %}
+              <span class="form__error">{{ error }}</span>
+            {% endfor %}
+          </div>
+          <div class="form__field">
+            {{ form.body_markdown.label_tag }}
+            {{ form.body_markdown }}
+            {% for error in form.body_markdown.errors %}
+              <span class="form__error">{{ error }}</span>
+            {% endfor %}
+          </div>
+          <div class="form__field">
+            {{ form.tags.label_tag }}
+            {{ form.tags }}
+            {% for error in form.tags.errors %}
+              <span class="form__error">{{ error }}</span>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="form__actions">
+          <button type="submit" name="action" value="request_changes" class="button button--primary" id="btn-request-changes">
+            {% trans "درخواست تغییر" %}
+          </button>
+          <button type="submit" name="action" value="approve" class="button button--primary" id="btn-approve">
+            {% trans "تأیید و ارسال به مدیر" %}
+          </button>
+          <button type="submit" name="action" value="edit" class="button button--link" id="btn-edit">
+            {% trans "ویرایش" %}
+          </button>
+          <a class="button button--link" href="{% url 'editor_queue' %}">{% trans "انصراف" %}</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const actionRadios = document.querySelectorAll('input[name="action"]');
+      const rcFields = document.getElementById("request-changes-fields");
+      const editFields = document.getElementById("edit-fields");
+      const btnRc = document.getElementById("btn-request-changes");
+      const btnApprove = document.getElementById("btn-approve");
+      const btnEdit = document.getElementById("btn-edit");
+
+      function updateFields() {
+        const action = document.querySelector('input[name="action"]:checked')?.value;
+        rcFields.style.display = action === "request_changes" ? "block" : "none";
+        editFields.style.display = action === "edit" ? "block" : "none";
+        btnRc.style.display = action === "request_changes" ? "inline-block" : "none";
+        btnApprove.style.display = action === "approve" ? "inline-block" : "none";
+        btnEdit.style.display = action === "edit" ? "inline-block" : "none";
+      }
+
+      actionRadios.forEach((r) => r.addEventListener("change", updateFields));
+      updateFields();
+    });
+  </script>
+{% endblock %}
