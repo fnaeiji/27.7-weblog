@@ -1,5 +1,6 @@
 """Editor and Admin workflow views (US3, US4)."""
 
+from accounts.models import User
 from blog.models import Article, ArticleRevision
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -8,7 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from django.views.generic import ListView
 
-from workflow.forms import ReviewForm
+from workflow.forms import AdminActionForm, ReviewForm, UserManagementForm
 from workflow.models import WorkflowEvent
 
 
@@ -112,7 +113,6 @@ class EditorReviewView(EditorRequiredMixin, View):
             messages.success(request, 'مقاله تأیید و برای مدیر ارسال شد.')
 
         elif action == 'edit':
-            # Create new revision and revert to DRAFT
             new_rev = ArticleRevision(
                 article=article,
                 revision_number=article.current_revision + 1,
@@ -149,3 +149,192 @@ class AdminRequiredMixin(LoginRequiredMixin):
         if request.user.role != 'ADMIN':
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
+
+
+class AdminDashboardView(AdminRequiredMixin, View):
+    """Admin dashboard with stats, pending/published articles, and users (FR-015)."""
+
+    template_name = 'workflow/admin/dashboard.html'
+
+    def get(self, request):
+        pending = Article.objects.by_status(Article.Status.PENDING_ADMIN_APPROVAL).select_related(
+            'author'
+        )
+        published = Article.objects.by_status(Article.Status.PUBLISHED).select_related('author')
+
+        users = User.objects.filter(is_active=True).order_by('username')
+
+        context = {
+            'pending_count': pending.count(),
+            'published_count': published.count(),
+            'active_users': users.count(),
+            'pending_articles': pending[:10],
+            'published_articles': published[:10],
+            'users': users[:20],
+        }
+        return render(request, self.template_name, context)
+
+
+class AdminPendingView(AdminRequiredMixin, View):
+    """Pending approval list with publish/reject actions (FR-015, FR-016, FR-017)."""
+
+    template_name = 'workflow/admin/pending_list.html'
+
+    def get(self, request):
+        articles = (
+            Article.objects.by_status(Article.Status.PENDING_ADMIN_APPROVAL)
+            .select_related('author')
+            .prefetch_related('revisions', 'workflow_events')
+            .order_by('-updated_at')
+        )
+        return render(request, self.template_name, {'articles': articles})
+
+    def post(self, request):
+        form = AdminActionForm(request.POST)
+        if not form.is_valid():
+            messages.error(request, 'فرم نامعتبر است.')
+            return redirect('admin_pending')
+
+        article = get_object_or_404(Article, pk=form.cleaned_data['article_id'])
+        action = form.cleaned_data['action']
+        note = form.cleaned_data.get('note', '').strip()
+
+        if action == 'publish':
+            revision_id = form.cleaned_data.get('revision_id')
+            if article.current_revision != revision_id:
+                messages.error(request, 'نسخه مقاله با نسخه تأییدشده مطابقت ندارد. انتشار رد شد.')
+                return redirect('admin_pending')
+            article.status = Article.Status.PUBLISHED
+            article.published_at = article.updated_at
+            article.save(update_fields=['status', 'published_at'])
+            article.workflow_events.create(
+                revision=article.get_current_revision(),
+                actor=request.user,
+                action=WorkflowEvent.Action.PUBLISH,
+                from_status=Article.Status.PENDING_ADMIN_APPROVAL,
+                to_status=Article.Status.PUBLISHED,
+                note=note,
+            )
+            messages.success(request, 'مقاله با موفقیت منتشر شد.')
+
+        elif action == 'reject':
+            article.status = Article.Status.CHANGES_REQUESTED
+            article.save(update_fields=['status'])
+            article.workflow_events.create(
+                revision=article.get_current_revision(),
+                actor=request.user,
+                action=WorkflowEvent.Action.REJECT_EDITORIAL,
+                from_status=Article.Status.PENDING_ADMIN_APPROVAL,
+                to_status=Article.Status.CHANGES_REQUESTED,
+                note=note,
+            )
+            messages.success(request, 'مقاله رد و به نویسنده برگردانده شد.')
+
+        return redirect('admin_pending')
+
+
+class AdminPublishedView(AdminRequiredMixin, View):
+    """Published articles list with unpublish action (FR-018)."""
+
+    template_name = 'workflow/admin/published_list.html'
+
+    def get(self, request):
+        articles = (
+            Article.objects.by_status(Article.Status.PUBLISHED)
+            .select_related('author')
+            .prefetch_related('revisions')
+            .order_by('-published_at')
+        )
+        return render(request, self.template_name, {'articles': articles})
+
+    def post(self, request):
+        form = AdminActionForm(request.POST)
+        if not form.is_valid():
+            messages.error(request, 'فرم نامعتبر است.')
+            return redirect('admin_published')
+
+        article = get_object_or_404(Article, pk=form.cleaned_data['article_id'])
+        note = form.cleaned_data.get('note', '').strip()
+
+        if form.cleaned_data['action'] == 'unpublish':
+            article.status = Article.Status.DRAFT
+            article.published_at = None
+            article.save(update_fields=['status', 'published_at'])
+            article.workflow_events.create(
+                revision=article.get_current_revision(),
+                actor=request.user,
+                action=WorkflowEvent.Action.UNPUBLISH,
+                from_status=Article.Status.PUBLISHED,
+                to_status=Article.Status.DRAFT,
+                note=note,
+            )
+            messages.success(request, 'مقاله لغو انتشار یافت و به پیش‌نویس برگردانده شد.')
+
+        return redirect('admin_published')
+
+
+class AdminUserManagementView(AdminRequiredMixin, View):
+    """User management: list, create, edit, deactivate (FR-004, FR-005, SC-011)."""
+
+    template_name = 'workflow/admin/user_management.html'
+
+    def get(self, request):
+        users = User.objects.all().order_by('-is_active', 'username')
+        form = UserManagementForm()
+        return render(request, self.template_name, {'users': users, 'form': form})
+
+    def post(self, request):
+        if 'create_user' in request.POST:
+            form = UserManagementForm(request.POST)
+            if form.is_valid():
+                user = form.save(commit=False)
+                user.set_password(request.POST.get('password', 'defaultpass123'))
+                user.save()
+                user.workflow_events.create(
+                    actor=request.user,
+                    action=WorkflowEvent.Action.ASSIGN_ROLE,
+                    note=f'Created with role {user.get_role_display()}',
+                )
+                messages.success(request, f'کاربر {user.username} ایجاد شد.')
+            else:
+                messages.error(request, 'خطا در ایجاد کاربر.')
+            return redirect('admin_users')
+
+        if 'edit_user' in request.POST:
+            user = get_object_or_404(User, pk=request.POST.get('user_id'))
+            form = UserManagementForm(request.POST, instance=user, current_user=request.user)
+            if form.is_valid():
+                form.save()
+                user.workflow_events.create(
+                    actor=request.user,
+                    action=WorkflowEvent.Action.ASSIGN_ROLE,
+                    note=f'Updated role to {user.get_role_display()}, active={user.is_active}',
+                )
+                messages.success(request, f'کاربر {user.username} به‌روزرسانی شد.')
+            else:
+                messages.error(request, 'خطا در به‌روزرسانی کاربر.')
+            return redirect('admin_users')
+
+        if 'deactivate_user' in request.POST:
+            user = get_object_or_404(User, pk=request.POST.get('user_id'))
+            if user == request.user:
+                messages.error(request, 'نمی‌توانید خودتان را غیرفعال کنید.')
+            else:
+                form = UserManagementForm(
+                    {'username': user.username, 'role': user.role, 'is_active': False},
+                    instance=user,
+                    current_user=request.user,
+                )
+                if form.is_valid():
+                    form.save()
+                    user.workflow_events.create(
+                        actor=request.user,
+                        action=WorkflowEvent.Action.DEACTIVATE_USER,
+                        note=f'Deactivated by {request.user.username}',
+                    )
+                    messages.success(request, f'کاربر {user.username} غیرفعال شد.')
+                else:
+                    messages.error(request, 'نمی‌توان آخرین مدیر فعال را غیرفعال کرد.')
+            return redirect('admin_users')
+
+        return redirect('admin_users')

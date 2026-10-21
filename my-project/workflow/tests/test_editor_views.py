@@ -1,10 +1,11 @@
 """Editor view tests for User Story 3."""
 
+from time import sleep
+
 import pytest
 from accounts.models import User
 from blog.models import Article, ArticleRevision
 from django.urls import reverse
-from django.utils import timezone
 
 from workflow.models import WorkflowEvent
 
@@ -59,10 +60,9 @@ def test_queue_auth(client, editor, admin):
 def test_queue_listing(client, editor, author):
     _make_article(author, status=Article.Status.DRAFT, slug='draft-1')
     a3 = _make_article(author, status=Article.Status.IN_EDITORIAL_REVIEW, slug='review-2')
+    sleep(0.01)  # Ensure different timestamps
     a2 = _make_article(author, status=Article.Status.IN_EDITORIAL_REVIEW, slug='review-1')
-    # Force a2 to have a later updated_at
-    a2.updated_at = timezone.now()
-    a2.save(update_fields=['updated_at'])
+    # a2 is created after a3, so it should have a later updated_at due to auto_now
 
     client.force_login(editor)
     response = client.get(reverse('editor_queue'))

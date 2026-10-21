@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "مدیریت کاربران" %}{% endblock %}
+
+{% block content %}
+  <h1 class="page-title">{% trans "مدیریت کاربران" %}</h1>
+
+  <div class="card">
+    <h2>{% trans "ایجاد کاربر جدید" %}</h2>
+    <form method="post" class="form" novalidate>
+      {% csrf_token %}
+      <input type="hidden" name="create_user" value="1">
+      {% for field in form %}
+        <div class="form__field">
+          {{ field.label_tag }}
+          {{ field }}
+          {% for error in field.errors %}
+            <span class="form__error">{{ error }}</span>
+          {% endfor %}
+        </div>
+      {% endfor %}
+      <div class="form__field">
+        <label for="id_password">{% trans "رمز عبور" %}</label>
+        <input type="password" name="password" id="id_password" required>
+      </div>
+      <button type="submit" class="button button--primary">{% trans "ایجاد" %}</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>{% trans "لیست کاربران" %}</h2>
+    {% if users %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>{% trans "نام کاربری" %}</th>
+            <th>{% trans "نقش" %}</th>
+            <th>{% trans "وضعیت" %}</th>
+            <th>{% trans "عملیات" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+          <tr>
+            <td>{{ user.username }}</td>
+            <td>{{ user.get_role_display }}</td>
+            <td>
+              <span class="badge {% if user.is_active %}badge--success{% else %}badge--danger{% endif %}">
+                {% if user.is_active %}{% trans "فعال" %}{% else %}{% trans "غیرفعال" %}{% endif %}
+              </span>
+            </td>
+            <td>
+              <form method="post" action="{% url 'admin_users' %}" class="inline-form">
+                {% csrf_token %}
+                <input type="hidden" name="edit_user" value="1">
+                <input type="hidden" name="user_id" value="{{ user.pk }}">
+                <select name="role" class="form__field">
+                  <option value="AUTHOR" {% if user.role == 'AUTHOR' %}selected{% endif %}>{% trans "نویسنده" %}</option>
+                  <option value="EDITOR" {% if user.role == 'EDITOR' %}selected{% endif %}>{% trans "ویراستار" %}</option>
+                  <option value="ADMIN" {% if user.role == 'ADMIN' %}selected{% endif %}>{% trans "مدیر" %}</option>
+                </select>
+                <input type="checkbox" name="is_active" {% if user.is_active %}checked{% endif %}>
+                <label for="is_active">{% trans "فعال" %}</label>
+                <button type="submit" class="button button--link">{% trans "ذخیره" %}</button>
+              </form>
+              {% if user != request.user %}
+                <form method="post" action="{% url 'admin_users' %}" class="inline-form" onsubmit="return confirm('{% trans "آیا مطمئن هستید؟ این کاربر دیگر نمی‌تواند وارد شود." %}')">
+                  {% csrf_token %}
+                  <input type="hidden" name="deactivate_user" value="1">
+                  <input type="hidden" name="user_id" value="{{ user.pk }}">
+                  <button type="submit" class="button button--link">{% trans "غیرفعال‌سازی" %}</button>
+                </form>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="empty-state">{% trans "کاربری وجود ندارد." %}</p>
+    {% endif %}
+  </div>
+{% endblock %}

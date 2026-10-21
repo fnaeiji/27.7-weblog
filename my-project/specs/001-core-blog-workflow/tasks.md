@@ -225,37 +225,37 @@ description: "Task list for Core Blog & Editorial Workflow implementation"
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T078 [P] [US4] Contract test: Admin dashboard accessible only to Admin at `workflow/tests/test_admin_views.py::test_admin_dashboard_auth`
-- [ ] T079 [P] [US4] Integration test: publish succeeds only when revision matches reviewed revision at `workflow/tests/test_admin_views.py::test_publish_revision_match` — **SC-004**
-- [ ] T080 [P] [US4] Integration test: publish rejected with error when content edited after editorial review at `workflow/tests/test_admin_views.py::test_publish_stale_revision_rejected` — **SC-004**
-- [ ] T081 [P] [US4] Integration test: reject with note → CHANGES_REQUESTED, workflow event logged at `workflow/tests/test_admin_views.py::test_admin_reject` — **FR-017**
-- [ ] T082 [P] [US4] Integration test: unpublish → DRAFT, published_at cleared, removed from public pages at `workflow/tests/test_admin_views.py::test_unpublish` — **SC-005**
-- [ ] T083 [P] [US4] Security test: last active Admin cannot be deactivated/demoted at `accounts/tests/test_bootstrap.py::test_last_admin_protection` — **SC-011**
+- [X] T078 [P] [US4] Contract test: Admin dashboard accessible only to Admin at `workflow/tests/test_admin_views.py::test_admin_dashboard_auth`
+- [X] T079 [P] [US4] Integration test: publish succeeds only when revision matches reviewed revision at `workflow/tests/test_admin_views.py::test_publish_revision_match` — **SC-004**
+- [X] T080 [P] [US4] Integration test: publish rejected with error when content edited after editorial review at `workflow/tests/test_admin_views.py::test_publish_stale_revision_rejected` — **SC-004**
+- [X] T081 [P] [US4] Integration test: reject with note → CHANGES_REQUESTED, workflow event logged at `workflow/tests/test_admin_views.py::test_admin_reject` — **FR-017**
+- [X] T082 [P] [US4] Integration test: unpublish → DRAFT, published_at cleared, removed from public pages at `workflow/tests/test_admin_views.py::test_unpublish` — **SC-005**
+- [X] T083 [P] [US4] Security test: last active Admin cannot be deactivated/demoted at `workflow/tests/test_admin_views.py::test_last_admin_protection` — **SC-011**
 
 ### Implementation for User Story 4
 
 **Forms**
 
-- [ ] T084 [P] [US4] Create AdminActionForm: action (publish/reject/unpublish), note (required for reject/unpublish) at `workflow/forms.py` — **FR-017, FR-018**
+- [X] T084 [P] [US4] Create AdminActionForm: action (publish/reject/unpublish), note (required for reject/unpublish) at `workflow/forms.py` — **FR-017, FR-018**
 
 **Views**
 
-- [ ] T085 [US4] Create Admin dashboard view: stats, pending approval list, published list, user management link at `workflow/views.py` — **FR-015**
-- [ ] T086 [US4] Create pending approval list view: PENDING_ADMIN_APPROVAL articles with publish/reject actions at `workflow/views.py` — **FR-015**
-- [ ] T087 [US4] Implement publish action: verify revision match, transition to PUBLISHED, set published_at, log WorkflowEvent bound to revision at `workflow/views.py` — **FR-016, FR-019, FR-022**
-- [ ] T088 [US4] Implement reject action: validate note, transition to CHANGES_REQUESTED, log WorkflowEvent at `workflow/views.py` — **FR-017, FR-021**
-- [ ] T089 [US4] Implement unpublish action: validate note, transition to DRAFT, clear published_at, log WorkflowEvent at `workflow/views.py` — **FR-018, FR-019, FR-021**
+- [X] T085 [US4] Create Admin dashboard view: stats, pending approval list, published list, user management link at `workflow/views.py` — **FR-015**
+- [X] T086 [US4] Create pending approval list view: PENDING_ADMIN_APPROVAL articles with publish/reject actions at `workflow/views.py` — **FR-015**
+- [X] T087 [US4] Implement publish action: verify revision match, transition to PUBLISHED, set published_at, log WorkflowEvent bound to revision at `workflow/views.py` — **FR-016, FR-019, FR-022**
+- [X] T088 [US4] Implement reject action: validate note, transition to CHANGES_REQUESTED, log WorkflowEvent at `workflow/views.py` — **FR-017, FR-021**
+- [X] T089 [US4] Implement unpublish action: validate note, transition to DRAFT, clear published_at, log WorkflowEvent at `workflow/views.py` — **FR-018, FR-019, FR-021**
 
 **Templates**
 
-- [ ] T090 [P] [US4] Create admin dashboard template: stats cards, pending table, published table at `workflow/templates/workflow/admin/dashboard.html` — **FR-026**
-- [ ] T091 [P] [US4] Create pending approval template: article preview, publish/reject buttons at `workflow/templates/workflow/admin/pending_list.html` — **FR-026**
-- [ ] T092 [P] [US4] Create user management template: user list, create/edit/deactivate, role assign at `workflow/templates/workflow/admin/user_management.html` — **FR-004**
+- [X] T090 [P] [US4] Create admin dashboard template: stats cards, pending table, published table at `workflow/templates/workflow/admin/dashboard.html` — **FR-026**
+- [X] T091 [P] [US4] Create pending approval template: article preview, publish/reject buttons at `workflow/templates/workflow/admin/pending_list.html` — **FR-026**
+- [X] T092 [P] [US4] Create user management template: user list, create/edit/deactivate, role assign at `workflow/templates/workflow/admin/user_management.html` — **FR-004**
 
 **URLs & Permissions**
 
-- [ ] T093 [US4] Configure Admin URLs: `/admin/dashboard/`, `/admin/pending/`, `/admin/published/`, `/admin/users/` at `workflow/urls.py`
-- [ ] T094 [US4] Apply Admin-only permission checks to all Admin views at `workflow/views.py` — **FR-003, FR-004**
+- [X] T093 [US4] Configure Admin URLs: `/manager/dashboard/`, `/manager/pending/`, `/manager/published/`, `/manager/users/` at `workflow/urls.py` (renamed from `/admin/` to avoid Django admin collision)
+- [X] T094 [US4] Apply Admin-only permission checks to all Admin views at `workflow/views.py` — **FR-003, FR-004**
 
 **Checkpoint**: Login as Admin, publish/reject/unpublish work correctly, revision binding enforced
 

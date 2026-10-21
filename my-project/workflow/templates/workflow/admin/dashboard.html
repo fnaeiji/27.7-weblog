@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "پنل مدیریت" %}{% endblock %}
+
+{% block content %}
+  <h1 class="page-title">{% trans "پنل مدیریت" %}</h1>
+
+  <div class="stats-grid">
+    <div class="card stat-card">
+      <h3>{% trans "در انتظار تأیید" %}</h3>
+      <p class="stat-number">{{ pending_count }}</p>
+      <a class="button button--link" href="{% url 'admin_pending' %}">{% trans "مشاهده همه" %}</a>
+    </div>
+    <div class="card stat-card">
+      <h3>{% trans "منتشرشده" %}</h3>
+      <p class="stat-number">{{ published_count }}</p>
+      <a class="button button--link" href="{% url 'admin_published' %}">{% trans "مشاهده همه" %}</a>
+    </div>
+    <div class="card stat-card">
+      <h3>{% trans "کاربران فعال" %}</h3>
+      <p class="stat-number">{{ active_users }}</p>
+      <a class="button button--link" href="{% url 'admin_users' %}">{% trans "مدیریت کاربران" %}</a>
+    </div>
+  </div>
+
+  <div class="dashboard-sections">
+    <section class="card">
+      <h2>{% trans "مقالات در انتظار تأیید" %}</h2>
+      {% if pending_articles %}
+        <table class="table">
+          <thead>
+            <tr><th>{% trans "عنوان" %}</th><th>{% trans "نویسنده" %}</th><th>{% trans "به‌روزرسانی" %}</th><th>{% trans "عملیات" %}</th></tr>
+          </thead>
+          <tbody>
+            {% for article in pending_articles %}
+              {% with rev=article.get_current_revision %}
+              <tr>
+                <td>{{ rev.title }}</td>
+                <td>{{ article.author.username }}</td>
+                <td>{{ article.updated_at|date:"Y-m-d H:i" }}</td>
+                <td>
+                  <form method="post" action="{% url 'admin_pending' %}" class="inline-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="article_id" value="{{ article.pk }}">
+                    <input type="hidden" name="revision_id" value="{{ article.current_revision }}">
+                    <input type="hidden" name="action" value="publish">
+                    <button type="submit" class="button button--primary">{% trans "انتشار" %}</button>
+                  </form>
+                  <form method="post" action="{% url 'admin_pending' %}" class="inline-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="article_id" value="{{ article.pk }}">
+                    <input type="hidden" name="action" value="reject">
+                    <button type="submit" name="note" value="" class="button button--link" data-confirm="{% trans 'آیا مطمئن هستید؟ یادداشت الزامی است.' %}">{% trans "رد" %}</button>
+                  </form>
+                </td>
+              </tr>
+              {% endwith %}
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="empty-state">{% trans "مقاله‌ای در انتظار تأیید وجود ندارد." %}</p>
+      {% endif %}
+    </section>
+
+    <section class="card">
+      <h2>{% trans "مقالات منتشرشده" %}</h2>
+      {% if published_articles %}
+        <table class="table">
+          <thead>
+            <tr><th>{% trans "عنوان" %}</th><th>{% trans "نویسنده" %}</th><th>{% trans "تاریخ انتشار" %}</th><th>{% trans "عملیات" %}</th></tr>
+          </thead>
+          <tbody>
+            {% for article in published_articles %}
+              {% with rev=article.get_current_revision %}
+              <tr>
+                <td>{{ rev.title }}</td>
+                <td>{{ article.author.username }}</td>
+                <td>{{ article.published_at|date:"Y-m-d" }}</td>
+                <td>
+                  <form method="post" action="{% url 'admin_published' %}" class="inline-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="article_id" value="{{ article.pk }}">
+                    <input type="hidden" name="action" value="unpublish">
+                    <button type="submit" class="button button--danger" data-confirm="{% trans 'آیا مطمئن هستید؟ این کار مقاله را از دید عموم مخفی می‌کند.' %}">{% trans "لغو انتشار" %}</button>
+                  </form>
+                </td>
+              </tr>
+              {% endwith %}
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="empty-state">{% trans "مقاله منتشرشده‌ای وجود ندارد." %}</p>
+      {% endif %}
+    </section>
+
+    <section class="card">
+      <h2>{% trans "کاربران" %}</h2>
+      <a class="button button--link" href="{% url 'admin_users' %}">{% trans "مدیریت کامل کاربران" %}</a>
+      {% if users %}
+        <table class="table">
+          <thead>
+            <tr><th>{% trans "نام کاربری" %}</th><th>{% trans "نقش" %}</th><th>{% trans "وضعیت" %}</th></tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr>
+              <td>{{ user.username }}</td>
+              <td>{{ user.get_role_display }}</td>
+              <td><span class="badge {% if user.is_active %}badge--success{% else %}badge--danger{% endif %}">{{ user.get_is_active_display|default:"فعال" }}</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="empty-state">{% trans "کاربری وجود ندارد." %}</p>
+      {% endif %}
+    </section>
+  </div>
+{% endblock %}

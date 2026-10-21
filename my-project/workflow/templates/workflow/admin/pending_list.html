@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "مقالات در انتظار تأیید" %}{% endblock %}
+
+{% block content %}
+  <h1 class="page-title">{% trans "مقالات در انتظار تأیید مدیر" %}</h1>
+
+  {% if articles %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>{% trans "عنوان" %}</th>
+          <th>{% trans "نویسنده" %}</th>
+          <th>{% trans "نسخه" %}</th>
+          <th>{% trans "آخرین به‌روزرسانی" %}</th>
+          <th>{% trans "عملیات" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for article in articles %}
+          {% with rev=article.get_current_revision %}
+          <tr>
+            <td>
+              <a href="{% url 'article_detail' slug=rev.slug %}" target="_blank">{{ rev.title }}</a>
+            </td>
+            <td>{{ article.author.username }}</td>
+            <td>{{ article.current_revision }}</td>
+            <td>{{ article.updated_at|date:"Y-m-d H:i" }}</td>
+            <td>
+              <form method="post" action="{% url 'admin_pending' %}" class="inline-form">
+                {% csrf_token %}
+                <input type="hidden" name="article_id" value="{{ article.pk }}">
+                <input type="hidden" name="revision_id" value="{{ article.current_revision }}">
+                <input type="hidden" name="action" value="publish">
+                <button type="submit" class="button button--primary">{% trans "انتشار" %}</button>
+              </form>
+              <form method="post" action="{% url 'admin_pending' %}" class="inline-form">
+                {% csrf_token %}
+                <input type="hidden" name="article_id" value="{{ article.pk }}">
+                <input type="hidden" name="action" value="reject">
+                <input type="hidden" name="note" value="رد شده توسط مدیر">
+                <button type="submit" class="button button--link" data-confirm="{% trans 'آیا مطمئن هستید؟ یادداشت الزامی است.' %}">{% trans "رد" %}</button>
+              </form>
+            </td>
+          </tr>
+          {% endwith %}
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="empty-state">{% trans "مقاله‌ای در انتظار تأیید وجود ندارد." %}</p>
+  {% endif %}
+{% endblock %}
