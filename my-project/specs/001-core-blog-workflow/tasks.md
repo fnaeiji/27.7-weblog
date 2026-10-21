@@ -44,41 +44,41 @@ description: "Task list for Core Blog & Editorial Workflow implementation"
 
 ### 2.1 Django Project Configuration
 
-- [ ] T008 Create Django settings modules: base.py, development.py, production.py at `blog_project/settings/`
-- [ ] T009 Configure SQLite (dev) and PostgreSQL (prod) via DATABASE_URL in base.py at `blog_project/settings/base.py`
-- [ ] T010 Configure Django Templates with RTL Persian support, static files, locale paths at `blog_project/settings/base.py`
-- [ ] T011 Configure authentication: custom User model (accounts.User), password hashers (BCrypt), login URL at `blog_project/settings/base.py`
-- [ ] T012 Configure security: CSRF, session, secure headers, allowed hosts at `blog_project/settings/base.py`
+- [X] T008 Create Django settings modules: base.py, development.py, production.py at `blog_project/settings/`
+- [X] T009 Configure SQLite (dev) and PostgreSQL (prod) via DATABASE_URL in base.py at `blog_project/settings/base.py`
+- [X] T010 Configure Django Templates with RTL Persian support, static files, locale paths at `blog_project/settings/base.py`
+- [X] T011 Configure authentication: custom User model (accounts.User), password hashers (BCrypt), login URL at `blog_project/settings/base.py`
+- [X] T012 Configure security: CSRF, session, secure headers, allowed hosts at `blog_project/settings/base.py`
 
 ### 2.2 Core App - Shared Utilities
 
-- [ ] T013 [P] Create TimeStampedModel abstract base at `core/models.py`
-- [ ] T014 [P] Create slugify utility with Persian support at `core/utils.py`
-- [ ] T015 [P] Create markdown_to_safe_html pipeline (markdown-it-py → bleach) at `core/utils.py` — **FR-023**
-- [ ] T016 [P] Create permission mixins: AuthorRequiredMixin, ArticleOwnerOrEditorMixin, RevisionBoundActionMixin at `core/views.py` — **FR-003**
-- [ ] T017 [P] Create base template with RTL, Persian locale, navbar, messages at `templates/base.html`
-- [ ] T018 [P] Create fragment templates: _navbar.html, _messages.html, 403.html, 404.html at `templates/`
+- [X] T013 [P] Create TimeStampedModel abstract base at `core/models.py`
+- [X] T014 [P] Create slugify utility with Persian support at `core/utils.py`
+- [X] T015 [P] Create markdown_to_safe_html pipeline (markdown-it-py → bleach) at `core/utils.py` — **FR-023**
+- [X] T016 [P] Create permission mixins: AuthorRequiredMixin, ArticleOwnerOrEditorMixin, RevisionBoundActionMixin at `core/views.py` — **FR-003**
+- [X] T017 [P] Create base template with RTL, Persian locale, navbar, messages at `templates/base.html`
+- [X] T018 [P] Create fragment templates: _navbar.html, _messages.html, 403.html, 404.html at `templates/`
 
 ### 2.3 Accounts App - User Model & Auth
 
-- [ ] T019 Create User model extending AbstractUser with role enum (AUTHOR, EDITOR, ADMIN), is_active at `accounts/models.py` — **FR-004, FR-005**
-- [ ] T020 Create UserManager with create_user, create_superuser, bootstrap_admin at `accounts/managers.py` — **FR-002**
-- [ ] T021 Create bootstrap_admin management command (idempotent, env-driven) at `accounts/management/commands/bootstrap_admin.py` — **FR-002, FR-008**
-- [ ] T022 Create login/logout views with role-based redirect at `accounts/views.py` — **FR-001**
-- [ ] T023 Create login form with username/password, CSRF at `accounts/forms.py`
-- [ ] T024 Create login template with RTL Persian at `accounts/templates/accounts/login.html`
+- [X] T019 Create User model extending AbstractUser with role enum (AUTHOR, EDITOR, ADMIN), is_active at `accounts/models.py` — **FR-004, FR-005**
+- [X] T020 Create UserManager with create_user, create_superuser, bootstrap_admin at `accounts/managers.py` — **FR-002**
+- [X] T021 Create bootstrap_admin management command (idempotent, env-driven) at `accounts/management/commands/bootstrap_admin.py` — **FR-002, FR-008**
+- [X] T022 Create login/logout views with role-based redirect at `accounts/views.py` — **FR-001**
+- [X] T023 Create login form with username/password, CSRF at `accounts/forms.py`
+- [X] T024 Create login template with RTL Persian at `accounts/templates/accounts/login.html`
 
 ### 2.4 Database Migrations
 
-- [ ] T025 Generate initial migrations for accounts, blog, workflow apps: `python manage.py makemigrations` at project root
-- [ ] T026 Review and edit migrations: add unique constraints, check constraints, composite indexes per data-model.md at `accounts/migrations/`, `blog/migrations/`, `workflow/migrations/`
+- [X] T025 Generate initial migrations for accounts, blog, workflow apps: `python manage.py makemigrations` at project root — accounts done; blog deferred to T037 (Phase 3); workflow blocked (no model-creation task in tasks.md)
+- [X] T026 Review and edit migrations: add unique constraints, check constraints, composite indexes per data-model.md at `accounts/migrations/`, `blog/migrations/`, `workflow/migrations/` — accounts done (role index + role check); blog/workflow deferred
 
 ### 2.5 Static Assets
 
-- [ ] T027 [P] Create base.css with CSS custom properties for theming at `static/css/base.css`
-- [ ] T028 [P] Create rtl.css with Persian font, RTL layout utilities at `static/css/rtl.css`
-- [ ] T029 [P] Create components.css for forms, tables, cards, buttons at `static/css/components.css`
-- [ ] T030 [P] Create minimal main.js for UI interactions (confirm dialogs, form enhancements) at `static/js/main.js`
+- [X] T027 [P] Create base.css with CSS custom properties for theming at `static/css/base.css`
+- [X] T028 [P] Create rtl.css with Persian font, RTL layout utilities at `static/css/rtl.css`
+- [X] T029 [P] Create components.css for forms, tables, cards, buttons at `static/css/components.css`
+- [X] T030 [P] Create minimal main.js for UI interactions (confirm dialogs, form enhancements) at `static/js/main.js`
 
 **Checkpoint**: Foundation ready — run `python manage.py migrate && python manage.py bootstrap_admin && python manage.py runserver` to verify setup
 

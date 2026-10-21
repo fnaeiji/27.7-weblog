@@ -1,0 +1,52 @@
+:root {
+  --color-bg: #ffffff;
+  --color-surface: #f8fafc;
+  --color-text: #1f2933;
+  --color-muted: #6b7280;
+  --color-primary: #2563eb;
+  --color-primary-dark: #1d4ed8;
+  --color-border: #e5e7eb;
+  --color-danger: #dc2626;
+  --radius: 0.5rem;
+  --space: 1rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Tahoma,
+    sans-serif;
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 60rem;
+  margin-inline: auto;
+  padding-inline: var(--space);
+}
+
+a {
+  color: var(--color-primary);
+}
+
+.page-title {
+  font-size: 1.5rem;
+  margin-block: 1rem;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+}

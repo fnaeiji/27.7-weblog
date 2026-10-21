@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "دسترسی ممنوع" %}{% endblock %}
+
+{% block content %}
+  <h1 class="page-title">{% trans "دسترسی ممنوع" %}</h1>
+  <p>{% trans "شما اجازه دسترسی به این صفحه را ندارید." %}</p>
+  <p><a class="button button--link" href="/">{% trans "بازگشت به صفحه اصلی" %}</a></p>
+{% endblock %}

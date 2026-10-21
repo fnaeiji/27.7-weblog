@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "صفحه یافت نشد" %}{% endblock %}
+
+{% block content %}
+  <h1 class="page-title">{% trans "صفحه یافت نشد" %}</h1>
+  <p>{% trans "صفحه‌ای که به دنبال آن هستید وجود ندارد." %}</p>
+  <p><a class="button button--link" href="/">{% trans "بازگشت به صفحه اصلی" %}</a></p>
+{% endblock %}

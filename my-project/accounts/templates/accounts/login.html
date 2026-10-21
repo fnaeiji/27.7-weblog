@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "ورود" %}{% endblock %}
+
+{% block content %}
+  <h1 class="page-title">{% trans "ورود به سامانه" %}</h1>
+  <form method="post" class="form" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <ul class="form__errors">
+        {% for error in form.non_field_errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% for field in form %}
+      <div class="form__field">
+        {{ field.label_tag }}
+        {{ field }}
+        {% for error in field.errors %}
+          <span class="form__error">{{ error }}</span>
+        {% endfor %}
+      </div>
+    {% endfor %}
+    <button type="submit" class="button button--primary">{% trans "ورود" %}</button>
+  </form>
+{% endblock %}

@@ -1,0 +1,26 @@
+/* RTL / Persian layout utilities (Constitution VIII). */
+
+html[dir="rtl"] body {
+  text-align: right;
+}
+
+html[dir="rtl"] .navbar__links {
+  margin-inline-start: auto;
+}
+
+html[dir="rtl"] .form__field {
+  text-align: right;
+}
+
+/* Logical properties keep layout correct if the direction flips to LTR. */
+.margin-start {
+  margin-inline-start: var(--space);
+}
+
+.float-start {
+  float: inline-start;
+}
+
+.text-align-start {
+  text-align: start;
+}

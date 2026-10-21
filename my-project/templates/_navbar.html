@@ -1,0 +1,15 @@
+{% load i18n %}
+<nav class="navbar" aria-label="{% trans 'ناوبری اصلی' %}">
+  <a class="navbar__brand" href="/">{% trans "وبلاگ" %}</a>
+  <div class="navbar__links">
+    {% if user.is_authenticated %}
+      <span class="navbar__user">{{ user.username }}</span>
+      <form method="post" action="{% url 'logout' %}" class="navbar__form">
+        {% csrf_token %}
+        <button type="submit" class="button button--link">{% trans "خروج" %}</button>
+      </form>
+    {% else %}
+      <a class="button button--link" href="{% url 'login' %}">{% trans "ورود" %}</a>
+    {% endif %}
+  </div>
+</nav>

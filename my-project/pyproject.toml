@@ -5,6 +5,7 @@ description = "Persian-first blog platform with editorial workflow"
 requires-python = ">=3.12"
 dependencies = [
     "Django==5.2.4",
+    "bcrypt==4.2.1",
     "python-dotenv==1.1.1",
     "markdown-it-py==3.0.0",
     "bleach==6.2.0",
@@ -53,6 +54,8 @@ ignore = ["DJ01"]
 "manage.py" = ["PLC0415", "TRY003"]
 # `from .base import *` is the documented settings-inheritance pattern.
 "blog_project/settings/*.py" = ["F403", "F405"]
+# Auto-generated migrations exceed the line length and use Django's import style.
+"**/migrations/*.py" = ["E501", "I001"]
 
 [tool.ruff.format]
 quote-style = "single"
