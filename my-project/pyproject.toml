@@ -1,0 +1,68 @@
+[project]
+name = "blog_project"
+version = "0.1.0"
+description = "Persian-first blog platform with editorial workflow"
+requires-python = ">=3.12"
+dependencies = [
+    "Django==5.2.4",
+    "python-dotenv==1.1.1",
+    "markdown-it-py==3.0.0",
+    "bleach==6.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.3.5",
+    "pytest-django==4.9.0",
+    "ruff==0.8.6",
+]
+
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+preview = true
+src = ["blog_project", "core", "accounts", "blog", "workflow"]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I",
+    "W",
+    "UP",
+    "B",
+    "C4",
+    "DJ",
+    "DTZ",
+    "T20",
+    "PTH",
+    "ERA",
+    "PL",
+    "TRY",
+    "SIM",
+]
+ignore = ["DJ01"]
+
+[tool.ruff.lint.per-file-ignores]
+# Django's generated manage.py uses a top-level import guard and a long
+# ImportError message; both are intentional and standard.
+"manage.py" = ["PLC0415", "TRY003"]
+# `from .base import *` is the documented settings-inheritance pattern.
+"blog_project/settings/*.py" = ["F403", "F405"]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+skip-magic-trailing-comma = false
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "blog_project.settings.test"
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--reuse-db -v --tb=short"
+testpaths = ["accounts/tests", "blog/tests", "workflow/tests", "core/tests"]
