@@ -65,7 +65,7 @@ class ArticleRevision(TimeStampedModel):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='revisions')
     revision_number = models.PositiveIntegerField()
     title = models.CharField(max_length=255)
-    slug = models.SlugField(max_length=255, unique=True)
+    slug = models.SlugField(max_length=255)
     excerpt = models.TextField(blank=True)
     body_markdown = models.TextField()
     tags = models.TextField(blank=True)
@@ -77,7 +77,7 @@ class ArticleRevision(TimeStampedModel):
         constraints = [
             models.UniqueConstraint(
                 fields=['article', 'revision_number'], name='blog_revision_unique_number'
-            )
+            ),
         ]
         indexes = [
             models.Index(fields=['slug'], name='blog_revision_slug_idx'),

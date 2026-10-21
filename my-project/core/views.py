@@ -19,7 +19,9 @@ class ArticleOwnerOrEditorMixin:
     """Authors see only their own articles; Editors/Admins see all (FR-003)."""
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        if not hasattr(self, 'model') or self.model is None:
+            return self.request.user.articles.none()
+        queryset = self.model.objects.all()
         user = self.request.user
         if getattr(user, 'is_admin', False) or getattr(user, 'is_editor', False):
             return queryset

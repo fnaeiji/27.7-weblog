@@ -134,37 +134,37 @@ description: "Task list for Core Blog & Editorial Workflow implementation"
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T045 [P] [US2] Contract test: Author dashboard accessible only to authenticated Author/Editor/Admin at `blog/tests/test_author_views.py::test_dashboard_auth`
-- [ ] T046 [P] [US2] Integration test: create draft → DRAFT status, revision=1, author_id set at `blog/tests/test_author_views.py::test_create_draft` — **SC-002**
-- [ ] T047 [P] [US2] Integration test: edit draft with changes → new revision created, previous preserved at `blog/tests/test_author_views.py::test_edit_creates_revision` — **SC-002**
-- [ ] T048 [P] [US2] Integration test: edit draft without changes → no new revision at `blog/tests/test_author_views.py::test_edit_no_change_no_revision` — **FR-009**
-- [ ] T049 [P] [US2] Integration test: submit for review → status IN_EDITORIAL_REVIEW, workflow event logged at `blog/tests/test_author_views.py::test_submit_for_review` — **FR-010**
-- [ ] T050 [P] [US2] Security test: Author cannot access other Author's draft via URL manipulation at `blog/tests/test_author_views.py::test_author_isolation` — **SC-006**
-- [ ] T051 [P] [US2] Validation test: duplicate slug rejected with error, form data retained at `blog/tests/test_author_views.py::test_duplicate_slug_rejected` — **SC-010**
+- [X] T045 [P] [US2] Contract test: Author dashboard accessible only to authenticated Author/Editor/Admin at `blog/tests/test_author_views.py::test_dashboard_auth`
+- [X] T046 [P] [US2] Integration test: create draft → DRAFT status, revision=1, author_id set at `blog/tests/test_author_views.py::test_create_draft` — **SC-002**
+- [X] T047 [P] [US2] Integration test: edit draft with changes → new revision created, previous preserved at `blog/tests/test_author_views.py::test_edit_creates_revision` — **SC-002**
+- [X] T048 [P] [US2] Integration test: edit draft without changes → no new revision at `blog/tests/test_author_views.py::test_edit_no_change_no_revision` — **FR-009**
+- [X] T049 [P] [US2] Integration test: submit for review → status IN_EDITORIAL_REVIEW, workflow event logged at `blog/tests/test_author_views.py::test_submit_for_review` — **FR-010**
+- [X] T050 [P] [US2] Security test: Author cannot access other Author's draft via URL manipulation at `blog/tests/test_author_views.py::test_author_isolation` — **SC-006**
+- [X] T051 [P] [US2] Validation test: duplicate slug rejected with error, form data retained at `blog/tests/test_author_views.py::test_duplicate_slug_rejected` — **SC-010**
 
 ### Implementation for User Story 2
 
 **Forms**
 
-- [ ] T052 [P] [US2] Create ArticleForm: title, slug, excerpt, body_markdown, tags with validation (title, body required; slug unique) at `blog/forms.py` — **FR-008, FR-024**
+- [X] T052 [P] [US2] Create ArticleForm: title, slug, excerpt, body_markdown, tags with validation (title, body required; slug unique) at `blog/forms.py` — **FR-008, FR-024**
 
 **Views**
 
-- [ ] T053 [US2] Create Author dashboard view: list user's articles with status, revision count at `blog/views.py` — **FR-007**
-- [ ] T054 [US2] Create article create view: GET form, POST save as DRAFT, create revision 1 at `blog/views.py` — **FR-007, FR-009**
-- [ ] T055 [US2] Create article edit view: load current revision, compare content, create new revision if changed at `blog/views.py` — **FR-009, FR-020**
-- [ ] T056 [US2] Create submit_for_review view: validate status (DRAFT/CHANGES_REQUESTED), transition to IN_EDITORIAL_REVIEW, log WorkflowEvent at `blog/views.py` — **FR-010, FR-021**
+- [X] T053 [US2] Create Author dashboard view: list user's articles with status, revision count at `blog/views.py` — **FR-007**
+- [X] T054 [US2] Create article create view: GET form, POST save as DRAFT, create revision 1 at `blog/views.py` — **FR-007, FR-009**
+- [X] T055 [US2] Create article edit view: load current revision, compare content, create new revision if changed at `blog/views.py` — **FR-009, FR-020**
+- [X] T056 [US2] Create submit_for_review view: validate status (DRAFT/CHANGES_REQUESTED), transition to IN_EDITORIAL_REVIEW, log WorkflowEvent at `blog/views.py` — **FR-010, FR-021**
 
 **Templates**
 
-- [ ] T057 [P] [US2] Create author dashboard template: article list with status badges, action buttons at `blog/templates/blog/author/dashboard.html` — **FR-026**
-- [ ] T058 [P] [US2] Create article form template: create/edit with validation errors, RTL Persian at `blog/templates/blog/author/article_form.html` — **FR-026, FR-027**
-- [ ] T059 [P] [US2] Create revision history template: list with number, editor, date, preview at `blog/templates/blog/author/history.html` — **FR-020, FR-021**
+- [X] T057 [P] [US2] Create author dashboard template: article list with status badges, action buttons at `blog/templates/blog/author/dashboard.html` — **FR-026**
+- [X] T058 [P] [US2] Create article form template: create/edit with validation errors, RTL Persian at `blog/templates/blog/author/article_form.html` — **FR-026, FR-027**
+- [ ] T059 [P] [US2] Create revision history template: list with number, editor, date, preview at `blog/templates/blog/author/history.html` — **FR-020, FR-021** (Phase 8)
 
 **URLs & Permissions**
 
-- [ ] T060 [US2] Configure Author URLs: `/author/dashboard/`, `/author/article/new/`, `/author/article/<id>/edit/`, `/author/article/<id>/submit/` at `blog/urls.py`
-- [ ] T061 [US2] Apply ArticleOwnerOrEditorMixin to all Author views at `blog/views.py` — **FR-003, FR-004**
+- [X] T060 [US2] Configure Author URLs: `/author/dashboard/`, `/author/article/new/`, `/author/article/<id>/edit/`, `/author/article/<id>/submit/` at `blog/urls.py`
+- [X] T061 [US2] Apply ArticleOwnerOrEditorMixin to all Author views at `blog/views.py` — **FR-003, FR-004**
 
 **Checkpoint**: Login as Author, create/edit/submit articles, verify revisions and workflow events
 

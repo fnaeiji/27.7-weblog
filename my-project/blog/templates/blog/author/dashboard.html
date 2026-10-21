@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "داشبورد نویسنده" %}{% endblock %}
+
+{% block content %}
+  <div class="dashboard-header">
+    <h1 class="page-title">{% trans "مقالات من" %}</h1>
+    <a class="button button--primary" href="{% url 'author_article_create' %}">{% trans "مقاله جدید" %}</a>
+  </div>
+
+  {% if articles %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>{% trans "عنوان" %}</th>
+          <th>{% trans "وضعیت" %}</th>
+          <th>{% trans "نسخه‌ها" %}</th>
+          <th>{% trans "به‌روزرسانی" %}</th>
+          <th>{% trans "عملیات" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for article in articles %}
+          {% with rev=article.get_current_revision %}
+          <tr>
+            <td>{{ rev.title }}</td>
+            <td>
+              <span class="badge badge--{{ article.get_status_display|lower }}">
+                {{ article.get_status_display }}
+              </span>
+            </td>
+            <td>{{ article.current_revision }}</td>
+            <td>{{ article.updated_at|date:"Y-m-d H:i" }}</td>
+            <td class="actions">
+              {% if article.is_editable %}
+                <a class="button button--link" href="{% url 'author_article_edit' pk=article.pk %}">{% trans "ویرایش" %}</a>
+                <form method="post" action="{% url 'author_article_submit' pk=article.pk %}" class="inline-form">
+                  {% csrf_token %}
+                  <button type="submit" class="button button--link">{% trans "ارسال برای بررسی" %}</button>
+                </form>
+              {% endif %}
+            </td>
+          </tr>
+          {% endwith %}
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="empty-state">{% trans "هنوز مقاله‌ای ندارید." %}</p>
+  {% endif %}
+{% endblock %}

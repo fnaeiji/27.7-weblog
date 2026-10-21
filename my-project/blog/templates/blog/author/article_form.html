@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% if action == 'create' %}{% trans "مقاله جدید" %}{% else %}{% trans "ویرایش مقاله" %}{% endif %}{% endblock %}
+
+{% block content %}
+  <h1 class="page-title">{% if action == 'create' %}{% trans "مقاله جدید" %}{% else %}{% trans "ویرایش مقاله" %}{% endif %}</h1>
+
+  <form method="post" class="form" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <ul class="form__errors">
+        {% for error in form.non_field_errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% for field in form %}
+      <div class="form__field">
+        {{ field.label_tag }}
+        {{ field }}
+        {% if field.help_text %}<small class="form__help">{{ field.help_text }}</small>{% endif %}
+        {% for error in field.errors %}
+          <span class="form__error">{{ error }}</span>
+        {% endfor %}
+      </div>
+    {% endfor %}
+    <div class="form__actions">
+      <button type="submit" class="button button--primary">
+        {% if action == 'create' %}{% trans "ذخیره پیش‌نویس" %}{% else %}{% trans "ذخیره تغییرات" %}{% endif %}
+      </button>
+      <a class="button button--link" href="{% url 'author_dashboard' %}">{% trans "انصراف" %}</a>
+    </div>
+  </form>
+{% endblock %}
