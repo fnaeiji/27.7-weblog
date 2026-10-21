@@ -308,27 +308,27 @@ description: "Task list for Core Blog & Editorial Workflow implementation"
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T106 [P] [US6] Integration test: revision history shows all revisions with number, editor, date, preview at `blog/tests/test_revisions.py::test_revision_history` — **FR-020**
-- [ ] T107 [P] [US6] Integration test: workflow history shows all events with actor, action, from/to, note, timestamp at `workflow/tests/test_admin_views.py::test_workflow_history` — **FR-021**
-- [ ] T108 [P] [US6] Security test: unauthorized user cannot view history at `blog/tests/test_revisions.py::test_history_access_control` — **SC-006**
+- [X] T106 [P] [US6] Integration test: revision history shows all revisions with number, editor, date, preview at `blog/tests/test_revisions.py` — **FR-020**
+- [X] T107 [P] [US6] Integration test: workflow history shows all events with actor, action, from/to, note, timestamp at `blog/tests/test_revisions.py` — **FR-021**
+- [X] T108 [P] [US6] Security test: unauthorized user cannot view history at `blog/tests/test_revisions.py` — **SC-006**
 
 ### Implementation for User Story 6
 
 **Views**
 
-- [ ] T109 [US6] Create revision history view: list ArticleRevision for article with content preview at `blog/views.py` — **FR-020**
-- [ ] T110 [US6] Create workflow history view: list WorkflowEvent for article chronologically at `workflow/views.py` — **FR-021**
-- [ ] T111 [US6] Add history tabs/links to Author, Editor, Admin article detail views at `blog/views.py`, `workflow/views.py`
+- [X] T109 [US6] Create revision history view: list ArticleRevision for article with content preview at `blog/views.py` — **FR-020**
+- [X] T110 [US6] Create workflow history view: list WorkflowEvent for article chronologically at `workflow/views.py` — **FR-021**
+- [X] T111 [US6] Add history tabs/links to Author, Editor, Admin article detail views at `blog/views.py`, `workflow/views.py`
 
 **Templates**
 
-- [ ] T112 [P] [US6] Create revision history template: table with revision#, editor, date, preview link at `blog/templates/blog/author/history.html` (extend) — **FR-026**
-- [ ] T113 [P] [US6] Create workflow history template: timeline with actor, action, from→to, note, timestamp at `workflow/templates/workflow/admin/history.html` — **FR-026**
+- [X] T112 [P] [US6] Create revision history template: table with revision#, editor, date at `blog/templates/blog/author/history.html`, `workflow/templates/workflow/editor/history.html`, `workflow/templates/workflow/admin/history.html` — **FR-026**
+- [X] T113 [P] [US6] Create workflow history template: timeline with actor, action, from→to, note, timestamp at `blog/templates/blog/author/workflow_history.html`, `workflow/templates/workflow/editor/workflow_history.html`, `workflow/templates/workflow/admin/workflow_history.html` — **FR-026**
 
 **URLs & Permissions**
 
-- [ ] T114 [US6] Configure history URLs: `/author/article/<id>/history/`, `/editor/article/<id>/history/`, `/admin/article/<id>/history/` at `blog/urls.py`, `workflow/urls.py`
-- [ ] T115 [US6] Apply ArticleOwnerOrEditorMixin to history views at `blog/views.py`, `workflow/views.py` — **FR-003**
+- [X] T114 [US6] Configure history URLs: `/author/article/<id>/history/`, `/editor/article/<id>/history/`, `/manager/article/<id>/history/` at `blog/urls.py`, `workflow/urls.py`
+- [X] T115 [US6] Apply ArticleOwnerOrEditorMixin to history views at `blog/views.py`, `workflow/views.py` — **FR-003**
 
 **Checkpoint**: History views work for all authorized roles, show complete audit trail
 

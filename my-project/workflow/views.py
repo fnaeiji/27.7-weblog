@@ -1,4 +1,4 @@
-"""Editor and Admin workflow views (US3, US4)."""
+"""Editor and Admin workflow views (US3, US4, US6)."""
 
 from accounts.models import User
 from blog.models import Article, ArticleRevision
@@ -338,3 +338,47 @@ class AdminUserManagementView(AdminRequiredMixin, View):
             return redirect('admin_users')
 
         return redirect('admin_users')
+
+
+class EditorArticleRevisionHistoryView(EditorRequiredMixin, View):
+    """Editor view of article revision history (FR-020)."""
+
+    template_name = 'workflow/editor/history.html'
+
+    def get(self, request, pk):
+        article = get_object_or_404(Article, pk=pk)
+        revisions = article.revisions.select_related('created_by').order_by('-revision_number')
+        return render(request, self.template_name, {'article': article, 'revisions': revisions})
+
+
+class EditorArticleWorkflowHistoryView(EditorRequiredMixin, View):
+    """Editor view of article workflow history (FR-021)."""
+
+    template_name = 'workflow/editor/workflow_history.html'
+
+    def get(self, request, pk):
+        article = get_object_or_404(Article, pk=pk)
+        events = article.workflow_events.select_related('actor', 'revision').order_by('created_at')
+        return render(request, self.template_name, {'article': article, 'events': events})
+
+
+class AdminArticleRevisionHistoryView(AdminRequiredMixin, View):
+    """Admin view of article revision history (FR-020)."""
+
+    template_name = 'workflow/admin/history.html'
+
+    def get(self, request, pk):
+        article = get_object_or_404(Article, pk=pk)
+        revisions = article.revisions.select_related('created_by').order_by('-revision_number')
+        return render(request, self.template_name, {'article': article, 'revisions': revisions})
+
+
+class AdminArticleWorkflowHistoryView(AdminRequiredMixin, View):
+    """Admin view of article workflow history (FR-021)."""
+
+    template_name = 'workflow/admin/workflow_history.html'
+
+    def get(self, request, pk):
+        article = get_object_or_404(Article, pk=pk)
+        events = article.workflow_events.select_related('actor', 'revision').order_by('created_at')
+        return render(request, self.template_name, {'article': article, 'events': events})

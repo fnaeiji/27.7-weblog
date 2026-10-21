@@ -1,4 +1,4 @@
-"""Blog URL configuration (US1 + US2)."""
+"""Blog URL configuration (US1 + US2 + US6)."""
 
 from django.urls import path
 
@@ -16,5 +16,15 @@ urlpatterns = [
         'author/article/<int:pk>/submit/',
         views.ArticleSubmitView.as_view(),
         name='author_article_submit',
+    ),
+    path(
+        'author/article/<int:pk>/history/',
+        views.ArticleRevisionHistoryView.as_view(),
+        name='author_article_history',
+    ),
+    path(
+        'author/article/<int:pk>/workflow-history/',
+        views.ArticleWorkflowHistoryView.as_view(),
+        name='author_article_workflow_history',
     ),
 ]

@@ -1,4 +1,4 @@
-"""Blog views: public + author (US1 + US2)."""
+"""Blog views: public + author + history (US1 + US2 + US6)."""
 
 from core.views import ArticleOwnerOrEditorMixin, AuthorRequiredMixin
 from django.contrib import messages
@@ -34,7 +34,6 @@ class ArticleDetailView(View):
     template_name = 'blog/public/article_detail.html'
 
     def get(self, request, slug):
-        # Find revision by slug; must be the current revision of a published article
         revision = get_object_or_404(ArticleRevision, slug=slug)
         article = revision.article
         if article.status != Article.Status.PUBLISHED:
@@ -77,22 +76,18 @@ class ArticleCreateView(AuthorRequiredMixin, View):
         return render(request, self.template_name, {'form': form, 'action': 'create'})
 
     def post(self, request):
-        # Validate form first with global uniqueness check (no article yet)
         form = ArticleForm(request.POST, article=None)
         if form.is_valid():
             article = Article.objects.create(author=request.user, status=Article.Status.DRAFT)
-            # Re-validate with the article for any other checks, then save
-            form = ArticleForm(request.POST, article=article)
-            if form.is_valid():
-                revision = form.save(commit=False)
-                revision.article = article
-                revision.revision_number = 1
-                revision.created_by = request.user
-                revision.save()
-                article.current_revision = 1
-                article.save(update_fields=['current_revision'])
-                messages.success(request, 'پیش‌نویس با موفقیت ایجاد شد.')
-                return redirect('author_dashboard')
+            revision = form.save(commit=False)
+            revision.article = article
+            revision.revision_number = 1
+            revision.created_by = request.user
+            revision.save()
+            article.current_revision = 1
+            article.save(update_fields=['current_revision'])
+            messages.success(request, 'پیش‌نویس با موفقیت ایجاد شد.')
+            return redirect('author_dashboard')
         return render(request, self.template_name, {'form': form, 'action': 'create'})
 
 
@@ -120,7 +115,6 @@ class ArticleEditView(AuthorRequiredMixin, ArticleOwnerOrEditorMixin, View):
         if not article.is_editable():
             raise PermissionDenied
         current_rev = article.get_current_revision()
-        # Snapshot current values BEFORE form validation mutates the instance
         original_values = {
             'title': current_rev.title,
             'slug': current_rev.slug,
@@ -130,7 +124,6 @@ class ArticleEditView(AuthorRequiredMixin, ArticleOwnerOrEditorMixin, View):
         }
         form = ArticleForm(request.POST, instance=current_rev)
         if form.is_valid():
-            # Build a temporary revision with submitted data to compare against original
             submitted_rev = ArticleRevision(
                 title=form.cleaned_data['title'],
                 slug=form.cleaned_data['slug'],
@@ -140,7 +133,6 @@ class ArticleEditView(AuthorRequiredMixin, ArticleOwnerOrEditorMixin, View):
             )
             original_rev = ArticleRevision(**original_values)
             if original_rev.has_content_changes(submitted_rev):
-                # Create NEW revision (don't update existing)
                 new_rev = ArticleRevision(
                     article=article,
                     revision_number=article.current_revision + 1,
@@ -189,3 +181,41 @@ class ArticleSubmitView(AuthorRequiredMixin, ArticleOwnerOrEditorMixin, View):
         )
         messages.success(request, 'مقاله برای بررسی ویراستاری ارسال شد.')
         return redirect('author_dashboard')
+
+
+class ArticleRevisionHistoryView(AuthorRequiredMixin, ArticleOwnerOrEditorMixin, View):
+    """View revision history for an article (FR-020)."""
+
+    template_name = 'blog/author/history.html'
+    model = Article
+
+    def get_queryset(self):
+        return super().get_queryset()
+
+    def get(self, request, pk):
+        article = get_object_or_404(self.get_queryset(), pk=pk)
+        revisions = article.revisions.order_by('-revision_number')
+        return render(
+            request,
+            self.template_name,
+            {'article': article, 'revisions': revisions},
+        )
+
+
+class ArticleWorkflowHistoryView(AuthorRequiredMixin, ArticleOwnerOrEditorMixin, View):
+    """View workflow event history for an article (FR-021)."""
+
+    template_name = 'blog/author/workflow_history.html'
+    model = Article
+
+    def get_queryset(self):
+        return super().get_queryset()
+
+    def get(self, request, pk):
+        article = get_object_or_404(self.get_queryset(), pk=pk)
+        events = article.workflow_events.select_related('actor', 'revision').order_by('created_at')
+        return render(
+            request,
+            self.template_name,
+            {'article': article, 'events': events},
+        )

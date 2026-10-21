@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "تاریخچه نسخه‌ها" %}: {{ article.get_current_revision.title }}{% endblock %}
+
+{% block content %}
+  <div class="history-header">
+    <h1 class="page-title">{% trans "تاریخچه نسخه‌ها" %}</h1>
+    <h2>{{ article.get_current_revision.title }}</h2>
+    <p class="article__meta">
+      {% trans "نویسنده" %}: {{ article.author.username }}
+      {% trans " | وضعیت" %}: {{ article.get_status_display }}
+    </p>
+    <a class="button button--link" href="{% url 'editor_queue' %}">{% trans "بازگشت به صف" %}</a>
+  </div>
+
+  {% if revisions %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>{% trans "شماره نسخه" %}</th>
+          <th>{% trans "عنوان" %}</th>
+          <th>{% trans "ویرایش‌کننده" %}</th>
+          <th>{% trans "تاریخ" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for rev in revisions %}
+        <tr>
+          <td>{{ rev.revision_number }}</td>
+          <td>{{ rev.title }}</td>
+          <td>{{ rev.created_by.username }}</td>
+          <td>{{ rev.created_at|date:"Y-m-d H:i" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="empty-state">{% trans "نسخه‌ای موجود نیست." %}</p>
+  {% endif %}
+{% endblock %}

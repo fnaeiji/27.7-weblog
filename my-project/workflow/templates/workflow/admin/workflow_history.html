@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "تاریخچه گردش کار" %}: {{ article.get_current_revision.title }}{% endblock %}
+
+{% block content %}
+  <div class="history-header">
+    <h1 class="page-title">{% trans "تاریخچه گردش کار" %}</h1>
+    <h2>{{ article.get_current_revision.title }}</h2>
+    <p class="article__meta">
+      {% trans "نویسنده" %}: {{ article.author.username }}
+      {% trans " | وضعیت فعلی" %}: {{ article.get_status_display }}
+    </p>
+    <a class="button button--link" href="{% url 'admin_dashboard' %}">{% trans "بازگشت به پنل مدیریت" %}</a>
+  </div>
+
+  {% if events %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>{% trans "زمان" %}</th>
+          <th>{% trans "اکنور" %}</th>
+          <th>{% trans "عملیات" %}</th>
+          <th>{% trans "از وضعیت" %}</th>
+          <th>{% trans "به وضعیت" %}</th>
+          <th>{% trans "یادداشت" %}</th>
+          <th>{% trans "نسخه" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for event in events %}
+        <tr>
+          <td>{{ event.created_at|date:"Y-m-d H:i" }}</td>
+          <td>{{ event.actor.username }}</td>
+          <td><span class="badge">{{ event.get_action_display }}</span></td>
+          <td>{% if event.from_status %}<span class="badge">{{ event.get_from_status_display }}</span>{% else %}-{% endif %}</td>
+          <td>{% if event.to_status %}<span class="badge">{{ event.get_to_status_display }}</span>{% else %}-{% endif %}</td>
+          <td>{{ event.note|default:"-" }}</td>
+          <td>{% if event.revision %}{{ event.revision.revision_number }}{% else %}-{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="empty-state">{% trans "رویداد گردش کاری وجود ندارد." %}</p>
+  {% endif %}
+{% endblock %}
