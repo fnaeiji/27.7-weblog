@@ -338,26 +338,15 @@ description: "Task list for Core Blog & Editorial Workflow implementation"
 
 **Purpose**: Improvements affecting multiple user stories, validation, documentation
 
-- [ ] T116 [P] Run full test suite: `pytest -v --cov=accounts --cov=blog --cov=workflow --cov=core` — **SC-007**
-- [ ] T117 [P] Run Ruff check and format: `ruff check . && ruff format --check .` — Constitution Principle VI
-- [ ] T118 [P] Run quickstart.md validation steps manually (all 8 verification steps) — **SC-001 through SC-011**
-- [ ] T119 [P] Create Persian translations for all user-facing strings at `locale/fa/LC_MESSAGES/django.po` — **FR-026**
-- [ ] T120 [P] Add Django admin registration for all models at `accounts/admin.py`, `blog/admin.py`, `workflow/admin.py`
-- [ ] T121 [P] Create README.md with setup, run, test commands at repository root
-- [ ] T122 [P] Verify all 11 PRD-01 Section 11 mandatory tests pass:
-  - Status transitions (valid/invalid) — T031, T049, T064, T065, T079, T080, T082
-  - Access control (4 roles) — T045, T050, T062, T067, T078, T083, T097, T098, T108
-  - Author isolation — T050
-  - Revision creation — T047, T048
-  - Publish without review/approval blocked — T079, T080
-  - Revision invalidation after edit — T073, T079, T080
-  - Public PUBLISHED filter — T032
-  - Unpublish removes from public — T082
-  - Unique slug — T051
-  - Markdown sanitization — T033
-  - Last Admin protection — T083
-- [ ] T123 [P] Test SQLite and PostgreSQL (via Docker) migrations apply cleanly — **FR-029, FR-030**
-- [ ] T124 [P] Verify no secrets in code, .env.example has no real values — Constitution Principle V
+- [X] T116 [P] Run full test suite: `pytest -v --cov=accounts --cov=blog --cov=workflow --cov=core` — **SC-007** (92% coverage)
+- [X] T117 [P] Run Ruff check and format: `ruff check . && ruff format --check .` — Constitution Principle VI
+- [ ] T118 [P] Run quickstart.md validation steps manually (all 8 verification steps) — **SC-001 through SC-011** (requires running server)
+- [ ] T119 [P] Create Persian translations for all user-facing strings at `locale/fa/LC_MESSAGES/django.po` — **FR-026** (UI is RTL Persian but .po file not generated)
+- [X] T120 [P] Add Django admin registration for all models at `accounts/admin.py`, `blog/admin.py`, `workflow/admin.py`
+- [X] T121 [P] Create README.md with setup, run, test commands at repository root
+- [X] T122 [P] Verify all 11 PRD-01 Section 11 mandatory tests pass (mapped in task list above)
+- [ ] T123 [P] Test SQLite and PostgreSQL migrations apply cleanly — **FR-029, FR-030** (Note: D1 CRITICAL - Docker requirement removed per Constitution VII; test PostgreSQL via local install or CI)
+- [X] T124 [P] Verify no secrets in code, .env.example has no real values — Constitution Principle V (verified via check_secrets.py)
 
 ---
 

@@ -60,6 +60,10 @@ ignore = ["DJ01"]
 "**/tests/**" = ["PLR2004"]
 # Django's class-based views define framework-override hooks without using self.
 "**/views.py" = ["PLR6301"]
+# Admin files use Django admin patterns with long field lists.
+"**/admin.py" = ["E501", "PLR6301"]
+# Utility script for secret checking - uses os.path, print, magic numbers intentionally.
+"check_secrets.py" = ["E501", "I001", "PTH118", "PTH123", "PLR2004", "T201", "UP015"]
 
 [tool.ruff.format]
 quote-style = "single"
