@@ -8,11 +8,11 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    list_display = ('username', 'role', 'is_active', 'is_staff', 'created_at')
+    list_display = ('username', 'role', 'is_active', 'is_staff', 'date_joined')
     list_filter = ('role', 'is_active', 'is_staff')
     search_fields = ('username',)
-    ordering = ('-created_at',)
-    readonly_fields = ('created_at', 'updated_at', 'last_login', 'date_joined')
+    ordering = ('-date_joined',)
+    readonly_fields = ('last_login', 'date_joined')
 
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
@@ -29,7 +29,7 @@ class UserAdmin(BaseUserAdmin):
                 )
             },
         ),
-        ('Dates', {'fields': ('last_login', 'date_joined', 'created_at', 'updated_at')}),
+        ('Dates', {'fields': ('last_login', 'date_joined')}),
     )
 
     add_fieldsets = (
