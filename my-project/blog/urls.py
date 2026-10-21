@@ -1,0 +1,10 @@
+"""Blog URL configuration (US1)."""
+
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path('', views.HomeView.as_view(), name='home'),
+    path('posts/<slug:slug>/', views.ArticleDetailView.as_view(), name='article_detail'),
+]

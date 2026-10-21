@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ revision.title }}{% endblock %}
+
+{% block content %}
+  <article class="article">
+    <h1 class="page-title">{{ revision.title }}</h1>
+    <p class="article__meta">
+      {% if revision.get_tags_list %}
+        <span class="article__tags">{{ revision.get_tags_list|join:"، " }}</span>
+      {% endif %}
+      {% if article.published_at %}
+        <span class="article__date">{{ article.published_at|date:"Y-m-d" }}</span>
+      {% endif %}
+    </p>
+    {% if revision.excerpt %}<p class="article__excerpt">{{ revision.excerpt }}</p>{% endif %}
+    <div class="article__body">{{ content_html|safe }}</div>
+  </article>
+  <p><a href="{% url 'home' %}">{% trans "بازگشت به فهرست مقالات" %}</a></p>
+{% endblock %}

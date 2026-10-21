@@ -94,31 +94,31 @@ description: "Task list for Core Blog & Editorial Workflow implementation"
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T031 [P] [US1] Contract test: public homepage returns 200, uses correct template at `blog/tests/test_public_views.py::test_homepage`
-- [ ] T032 [P] [US1] Contract test: article detail returns 200 for PUBLISHED, 404 for DRAFT/IN_REVIEW at `blog/tests/test_public_views.py::test_article_detail_access`
-- [ ] T033 [P] [US1] Integration test: Markdown with `<script>alert(1)</script>` renders as safe text at `blog/tests/test_public_views.py::test_markdown_sanitization` — **SC-009**
-- [ ] T034 [P] [US1] Integration test: duplicate slug returns 404 without revealing draft at `blog/tests/test_public_views.py::test_draft_not_exposed` — **SC-006**
+- [X] T031 [P] [US1] Contract test: public homepage returns 200, uses correct template at `blog/tests/test_public_views.py::test_homepage`
+- [X] T032 [P] [US1] Contract test: article detail returns 200 for PUBLISHED, 404 for DRAFT/IN_REVIEW at `blog/tests/test_public_views.py::test_article_detail_access`
+- [X] T033 [P] [US1] Integration test: Markdown with `<script>alert(1)</script>` renders as safe text at `blog/tests/test_public_views.py::test_markdown_sanitization` — **SC-009**
+- [X] T034 [P] [US1] Integration test: duplicate slug returns 404 without revealing draft at `blog/tests/test_public_views.py::test_draft_not_exposed` — **SC-006**
 
 ### Implementation for User Story 1
 
 **Models** (from data-model.md: Article, ArticleRevision)
 
-- [ ] T035 [P] [US1] Create Article model with status enum, current_revision, published_at, FK to User at `blog/models.py` — **FR-007, FR-008, FR-019, FR-025**
-- [ ] T036 [P] [US1] Create ArticleRevision model with revision_number, title, slug (unique), excerpt, body_markdown, tags, FK to Article and User at `blog/models.py` — **FR-009, FR-020, FR-024**
-- [ ] T037 [US1] Generate and apply migrations for blog app at `blog/migrations/`
+- [X] T035 [P] [US1] Create Article model with status enum, current_revision, published_at, FK to User at `blog/models.py` — **FR-007, FR-008, FR-019, FR-025**
+- [X] T036 [P] [US1] Create ArticleRevision model with revision_number, title, slug (unique), excerpt, body_markdown, tags, FK to Article and User at `blog/models.py` — **FR-009, FR-020, FR-024**
+- [X] T037 [US1] Generate and apply migrations for blog app at `blog/migrations/`
 
 **Services/Utils**
 
-- [ ] T038 [US1] Implement ArticleManager with published(), by_author(), by_status() querysets at `blog/managers.py` — **FR-011, FR-015**
-- [ ] T039 [US1] Implement get_current_revision(), can_be_viewed_by(), is_editable() on Article at `blog/models.py` — **FR-022**
+- [X] T038 [US1] Implement ArticleManager with published(), by_author(), by_status() querysets at `blog/managers.py` — **FR-011, FR-015**
+- [X] T039 [US1] Implement get_current_revision(), can_be_viewed_by(), is_editable() on Article at `blog/models.py` — **FR-022**
 
 **Views & Templates**
 
-- [ ] T040 [US1] Create public homepage view: paginated PUBLISHED articles at `blog/views.py`
-- [ ] T041 [US1] Create article detail view: slug lookup, status check, sanitized HTML rendering at `blog/views.py` — **FR-023, FR-025**
-- [ ] T042 [US1] Create homepage template: article list with title, excerpt, date, slug at `blog/templates/blog/public/home.html` — **FR-026**
-- [ ] T043 [US1] Create article detail template: full content, tags, publication date at `blog/templates/blog/public/article_detail.html` — **FR-026**
-- [ ] T044 [US1] Configure URLs: `/`, `/posts/<slug>/` at `blog/urls.py` and include in project urls at `blog_project/urls.py`
+- [X] T040 [US1] Create public homepage view: paginated PUBLISHED articles at `blog/views.py`
+- [X] T041 [US1] Create article detail view: slug lookup, status check, sanitized HTML rendering at `blog/views.py` — **FR-023, FR-025**
+- [X] T042 [US1] Create homepage template: article list with title, excerpt, date, slug at `blog/templates/blog/public/home.html` — **FR-026**
+- [X] T043 [US1] Create article detail template: full content, tags, publication date at `blog/templates/blog/public/article_detail.html` — **FR-026**
+- [X] T044 [US1] Configure URLs: `/`, `/posts/<slug>/` at `blog/urls.py` and include in project urls at `blog_project/urls.py`
 
 **Checkpoint**: Run server, verify homepage loads, article detail works, Markdown sanitized, drafts return 404
 

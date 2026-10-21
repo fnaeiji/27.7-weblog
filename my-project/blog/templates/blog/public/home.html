@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "مقالات" %}{% endblock %}
+
+{% block content %}
+  <h1 class="page-title">{% trans "مقالات" %}</h1>
+  {% if articles %}
+    <ul class="article-list">
+      {% for article in articles %}
+        {% with revision=article.get_current_revision %}
+          <li class="card">
+            <h2 class="card__title">
+              <a href="{% url 'article_detail' slug=revision.slug %}">{{ revision.title }}</a>
+            </h2>
+            {% if revision.excerpt %}<p class="card__excerpt">{{ revision.excerpt }}</p>{% endif %}
+            <p class="card__meta">{{ article.published_at|date:"Y-m-d" }}</p>
+          </li>
+        {% endwith %}
+      {% endfor %}
+    </ul>
+    {% if page_obj.has_other_pages %}
+      <nav class="pagination" aria-label="{% trans 'صفحه‌بندی' %}">
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}">{% trans "قبلی" %}</a>
+        {% endif %}
+        <span>{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}">{% trans "بعدی" %}</a>
+        {% endif %}
+      </nav>
+    {% endif %}
+  {% else %}
+    <p class="empty-state">{% trans "هنوز مقاله‌ای منتشر نشده است." %}</p>
+  {% endif %}
+{% endblock %}

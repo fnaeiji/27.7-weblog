@@ -21,6 +21,17 @@ class User(AbstractUser):
 
     objects = UserManager()
 
+    class Meta(AbstractUser.Meta):
+        indexes = [
+            models.Index(fields=['role'], name='accounts_user_role_idx'),
+        ]
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(role__in=['AUTHOR', 'EDITOR', 'ADMIN']),
+                name='accounts_user_role_check',
+            ),
+        ]
+
     @property
     def is_admin(self) -> bool:
         return self.role == self.Role.ADMIN

@@ -56,6 +56,10 @@ ignore = ["DJ01"]
 "blog_project/settings/*.py" = ["F403", "F405"]
 # Auto-generated migrations exceed the line length and use Django's import style.
 "**/migrations/*.py" = ["E501", "I001"]
+# Tests compare against HTTP status codes directly.
+"**/tests/**" = ["PLR2004"]
+# Django's class-based views define framework-override hooks without using self.
+"**/views.py" = ["PLR6301"]
 
 [tool.ruff.format]
 quote-style = "single"
