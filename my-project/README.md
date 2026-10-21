@@ -1,101 +1,96 @@
-# Persian Blog Platform
+# AI Blog Platform — Persian-First Blog with Editorial Workflow
 
-A Django-based blog platform with editorial workflow, supporting three human roles: Author, Editor, and Admin.
+A Django 5.2 blog application with role-based editorial workflow (Author → Editor → Admin) and a foundation for AI-assisted writing tools.
 
-## Features
+## Stack
 
-- **Public Blog**: Homepage with paginated published articles, article detail pages with Markdown rendering
-- **Author Dashboard**: Create/edit drafts, revision tracking, submit for review
-- **Editor Queue**: Review submitted articles, request changes, approve, or edit
-- **Admin Panel**: Publish (revision-bound), reject, unpublish, user management
-- **History & Audit**: Full revision history and workflow event timeline
-- **Persian-first RTL UI**: All interfaces in Persian with RTL layout
-
-## Tech Stack
-
-- **Python 3.12+**
-- **Django 5.2 LTS**
-- **SQLite** (development) / **PostgreSQL** (production)
-- **markdown-it-py** + **bleach** for Markdown rendering & sanitization
+- **Python** 3.12+
+- **Django** 5.2 LTS
+- **SQLite** (local dev/tests) / PostgreSQL (production)
+- **Django Templates** + **Thymeleaf-style** server-rendered UI (RTL, Persian)
+- **pytest** + **pytest-django** for testing
 - **Ruff** for linting/formatting
-- **pytest** for testing
+
+## Features (PRD-01 Complete)
+
+- **Public blog**: Homepage + article detail (PUBLISHED only)
+- **Markdown → sanitized HTML** (bleach allowlist, XSS-safe)
+- **Roles**: `AUTHOR`, `EDITOR`, `ADMIN` (server-side enforcement)
+- **Workflow**: `DRAFT` → `IN_EDITORIAL_REVIEW` → `CHANGES_REQUESTED` / `PENDING_ADMIN_APPROVAL` → `PUBLISHED`
+- **Immutable revisions** on every content change
+- **Append-only workflow audit log** (actor, action, from/to status, note, timestamp)
+- **Bootstrap admin** from env vars (`APP_BOOTSTRAP_ADMIN_USERNAME`, `APP_BOOTSTRAP_ADMIN_PASSWORD`)
+- **Slug uniqueness**, author isolation, last-admin protection
 
 ## Quick Start
 
 ### Prerequisites
 
-- Python 3.12+
-- uv (or pip)
+- Python 3.12 or newer
+- Git
 
 ### Installation
 
 ```bash
-# Clone repository
-git clone <repository-url>
-cd blog_project
+# Clone
+git clone https://github.com/fnaeiji/27.7-weblog.git
+cd 27.7-weblog/my-project
 
-# Create virtual environment
-uv venv .venv --python 3.12
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+# Create & activate virtual environment
+python -m venv .venv
+# Windows PowerShell:
+.venv\Scripts\Activate.ps1
+# Windows CMD:
+.venv\Scripts\activate.bat
+# Linux/macOS:
+source .venv/bin/activate
 
 # Install dependencies
-uv pip install -r requirements-dev.txt
-
-# Configure environment
-cp .env.example .env
-# Edit .env with your settings
+pip install -e ".[dev]"
+# If editable install fails (multiple top-level packages), install directly:
+# pip install Django==5.2.4 bcrypt==4.2.1 python-dotenv==1.1.1 markdown-it-py==3.0.0 bleach==6.2.0 pytest==8.3.5 pytest-django==4.9.0 ruff==0.8.6
 
 # Run migrations
 python manage.py migrate
 
-# Create bootstrap admin (idempotent)
+# Create initial admin (optional; uses env vars or defaults to admin/adminpass)
+# Set env vars first if you want custom credentials:
+# $env:APP_BOOTSTRAP_ADMIN_USERNAME="myadmin"
+# $env:APP_BOOTSTRAP_ADMIN_PASSWORD="strongpass123"
 python manage.py bootstrap_admin
 
-# Run development server
+# Start development server
 python manage.py runserver
 ```
 
-Server starts at: **http://127.0.0.1:8000/**
+Open http://127.0.0.1:8000/ — the public blog homepage.
 
-### Environment Variables
+### Login & Role-Based Panels
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `APP_BOOTSTRAP_ADMIN_USERNAME` | Initial admin username | `admin` |
-| `APP_BOOTSTRAP_ADMIN_PASSWORD` | Initial admin password | `change-me-on-first-run` |
-| `SECRET_KEY` | Django secret key | `dev-secret-key-not-for-production` |
-| `DEBUG` | Debug mode | `True` |
-| `ALLOWED_HOSTS` | Allowed hosts | `127.0.0.1,localhost` |
-| `DATABASE_URL` | Database connection | `sqlite:///db.sqlite3` |
+| Role | Panel URL | Capabilities |
+|------|-----------|--------------|
+| **Admin** | `/admin-dashboard/` | Publish/unpublish, user management, all articles |
+| **Editor** | `/editor-queue/` | Review queue, request changes, approve, edit |
+| **Author** | `/author-dashboard/` | Create/edit drafts, submit for review, history |
 
-## Verification Steps
-
-After starting the server:
-
-1. **Public Homepage**: Visit `http://127.0.0.1:8000/` — empty blog
-2. **Admin Login**: Visit `/login`, login with bootstrap credentials (`admin` / `change-me-on-first-run`)
-3. **Role Redirect**: Admin → `/manager/dashboard/`, Editor → `/editor/queue/`, Author → `/author/dashboard/`
-4. **Create Author**: In Admin panel → Users → Add user with AUTHOR role
-5. **Author Workflow**: Login as Author → Create draft → Edit (creates revisions) → Submit for review
-6. **Editor Review**: Login as Editor → Queue → Request changes / Approve
-7. **Admin Publish**: Login as Admin → Pending → Publish (revision-bound) / Reject
-8. **Unpublish**: Admin → Published → Unpublish → Article returns to DRAFT
-9. **History**: View revision & workflow history tabs at any role
+Default bootstrap admin: `admin` / `adminpass` (unless overridden by env vars).
 
 ## Running Tests
 
 ```bash
-# All tests
-pytest
+# Full test suite (44 tests)
+python -m pytest -v
 
-# With coverage
-pytest --cov=accounts --cov=blog --cov=workflow --cov=core
+# With coverage (if pytest-cov installed)
+python -m pytest --cov=blog --cov=workflow --cov=accounts --cov=core
 
 # Specific app
-pytest accounts/tests/
-pytest blog/tests/
-pytest workflow/tests/
+python -m pytest blog/tests/ -v
+python -m pytest workflow/tests/ -v
+python -m pytest accounts/tests/ -v
 ```
+
+All tests run against SQLite in-memory, **no external services or API keys required**.
 
 ## Code Quality
 
@@ -103,53 +98,61 @@ pytest workflow/tests/
 # Lint
 ruff check .
 
-# Format
+# Format check
+ruff format --check .
+
+# Auto-fix formatting
 ruff format .
 
-# Type check (if mypy configured)
-mypy .
+# Django system checks
+python manage.py check
+
+# Migration sanity
+python manage.py makemigrations --check --dry-run
 ```
 
 ## Project Structure
 
 ```
-blog_project/
-├── blog_project/          # Django settings
-│   ├── settings/
-│   │   ├── base.py
-│   │   ├── development.py
-│   │   ├── production.py
-│   │   └── test.py
-│   ├── urls.py
-│   └── wsgi.py
-├── core/                  # Shared utilities
-├── accounts/              # Authentication & users
-├── blog/                  # Articles, revisions, public pages
-├── workflow/              # Editorial workflow, editor/admin views
-├── static/                # CSS, JS
-├── templates/             # Global templates
-└── locale/                # Translations (fa)
+my-project/
+├── blog_project/          # Django project settings (base, dev, prod, test)
+├── core/                  # Shared utilities (TimeStampedModel, markdown sanitization)
+├── accounts/              # Custom User model (roles), auth views, bootstrap_admin command
+├── blog/                  # Article, ArticleRevision models + author/public views
+├── workflow/              # WorkflowEvent model + editor/admin views
+├── templates/             # Django templates (RTL, Persian UI)
+├── static/                # Static assets
+├── locale/                # i18n message files
+├── specs/                 # Spec Kit feature specifications (future)
+├── blog_prd_bundle/       # Source PRDs (FA)
+└── manage.py
 ```
 
-## Editorial Workflow
+## Environment Variables
 
-```
-DRAFT → IN_EDITORIAL_REVIEW → (CHANGES_REQUESTED ↔ IN_EDITORIAL_REVIEW)
-  → PENDING_ADMIN_APPROVAL → PUBLISHED
-  → (UNPUBLISH) → DRAFT (full re-review required)
-```
+| Variable | Purpose | Default |
+|----------|---------|---------|
+| `APP_BOOTSTRAP_ADMIN_USERNAME` | Initial admin username | `admin` |
+| `APP_BOOTSTRAP_ADMIN_PASSWORD` | Initial admin password | `adminpass` |
+| `DJANGO_SETTINGS_MODULE` | Settings module | `blog_project.settings.development` |
+| `DATABASE_URL` | Production PostgreSQL URL | (SQLite for dev) |
 
-Key rules:
-- Authors create/edit drafts; each content change creates a new revision
-- Editors review, request changes (with note), approve, or edit
-- Admins publish (only if current revision matches approved revision), reject, or unpublish
-- Unpublishing returns article to DRAFT requiring full re-review
-- All transitions logged in `WorkflowEvent` with revision binding
+Create a `.env` file in `my-project/` for local overrides (not committed).
 
-## Persian Translations
+## Production Notes
 
-UI is Persian-first with RTL layout. Translations managed in `locale/fa/LC_MESSAGES/django.po`.
+- Set `DJANGO_SETTINGS_MODULE=blog_project.settings.production`
+- Configure `DATABASE_URL` for PostgreSQL
+- Set `SECRET_KEY` from a strong random source
+- Run `python manage.py collectstatic`
+- Use a WSGI server (gunicorn/uWSGI) behind a reverse proxy
+- Enable HTTPS, secure cookies, CSRF trusted origins
+
+## Roadmap
+
+- **PRD-02**: AI Writing & Editorial Tools (WritingAgent, ReviewAgent, Mock + OpenAI-compatible providers)
+- **PRD-03**: AI Blog Assistant (read-only query tool for authenticated panel users)
 
 ## License
 
-MIT
+MIT — see `LICENSE` file.
